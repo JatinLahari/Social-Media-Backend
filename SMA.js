@@ -21,5 +21,5 @@ app.use("/comment", commentRouter);
 app.use("/postlike",likeRouter);
 app.use("/follow", followRouter);
 app.listen(process.env.PORT,()=>{
-    console.log("Server running on port 4321");
+    console.log("Server running...");
 });

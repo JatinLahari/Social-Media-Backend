@@ -6,11 +6,11 @@ export const followSomeone = async(request, response, next)=>{
         let followerId = request.user.userId; // ye meri id h jisse login kiya, alag alg user ko follow karunga
         let followingId = request.params.id; // ye samne wale user ki id h jisko follow kar rhe h
         
-        if(!followerId) return response.status(404).json({message: "User not logged in!"});
+        if(!followerId) return response.status(401).json({message: "User not logged in!"});
 
         let followerUser = await User.findByPk(followerId);
         let followingUser = await User.findByPk(followingId);
-        if(!followerUser || !followingUser) return response.status(401).json({message: "User not found to follow."});
+        if(!followerUser || !followingUser) return response.status(404).json({message: "User not found to follow."});
 
         if(parseInt(followerId) === parseInt(followingId)) return response.status(404).json({message:"You can't follow yourself!"});
 
@@ -31,12 +31,12 @@ export const unfollowSomeone = async (req, res, next)=>{
         let followerId = req.user.userId; // ye meri id h jisse alag alg user ko unfollow karunga
         let followingId = req.params.id;  // ye samne wale user ki id h jisko unfollow kar rhe h
         
-        if(!followerId) return res.status(404).json({message: "User not logged in!"});
+        if(!followerId) return res.status(401).json({message: "User not logged in!"});
 
-        let followingUser = await User.findByPk(followerId);
+        let followingUser = await User.findByPk(followingId);
 
         const unfollow = await Follow.destroy({where:{followerId, followingId}});
-        if(!unfollow) return res.status(401).json({message:"Failed to unfollow "+user.username});
+        if(!unfollow) return res.status(404).json({message:"Failed to unfollow "+followingUser.username});
 
         return res.status(200).json({message:"You unfollowed "+followingUser.username});
     } catch (error) {
@@ -49,7 +49,7 @@ export const unfollowSomeone = async (req, res, next)=>{
 export const getAllFollowers = async(request, response, next)=>{
     try{
         let userId = request.user.userId; // meri id k followers dekhna h isliye userId
-        if(!userId) return response.status(404).json({message: "User not logged in!"});
+        if(!userId) return response.status(401).json({message: "User not logged in!"});
 
         let followers = await Follow.findAll({where: {followingId: userId}});
         if(!followers) return response.status(404).json({message:"No followers found!"});
@@ -66,7 +66,7 @@ export const getAllFollowers = async(request, response, next)=>{
 export const getAllFollowing = async(request, response, next)=>{
     try{
         let userId = request.user.userId;
-        if(!userId) return response.status(404).json({message: "User not logged in!"});
+        if(!userId) return response.status(401).json({message: "User not logged in!"});
 
         let following = await Follow.findAll({ where: { followerId: userId } });
         if (!following) return response.status(404).json({ message: "You are not following anyone!" });

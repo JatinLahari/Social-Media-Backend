@@ -35,7 +35,7 @@ export const updateComment = async(req, res, next)=>{
     }
     catch(err){
         console.log("Failed to update comment ", err);
-        return res.status(501).json({error:"Internal Server Error"});
+        return res.status(500).json({error:"Internal Server Error"});
     }
 }
 
@@ -46,18 +46,19 @@ export const getAllComments = async(req, res, next)=>{
         if(!postId) return res.status(401).json({message: "Post ID not found!"});
         let comments = await Comment.findAll({where:{postId}, 
             include:[{model:User, attributes:['id', 'username']}]});
-        return res.status(201).json({message: "Found All Comments!",comments});
+        if(comments.length === 0) return res.status(404).json({message:"No comments found!"});
+        return res.status(200).json({message: "Found All Comments!",comments});
     }
     catch(err){
         console.log("Failed to get all comments ", err);
-        return res.status(501).json({error:"Internal Server Error"});
+        return res.status(500).json({error:"Internal Server Error"});
     }
 }
 //http://localhost:4321/comment/do-comment/ id
 export const doComment = async(req,res,next)=>{
     try{
         let cmtError = validationResult(req);
-        if(!cmtError.isEmpty()) return res.status(401).json({errors: cmtError.array()});
+        if(!cmtError.isEmpty()) return res.status(400).json({errors: cmtError.array()});
         let { comment } = req.body;
         let userId = req.user.userId;
         if(!userId) return res.status(401).json({message: "User not logged in."});
@@ -68,6 +69,6 @@ export const doComment = async(req,res,next)=>{
     }
     catch(err){
         console.log("Failed to Do Comment ", err);
-        return res.status(501).json({error: "Internal Server Error"});
+        return res.status(500).json({error: "Internal Server Error"});
     }
 }

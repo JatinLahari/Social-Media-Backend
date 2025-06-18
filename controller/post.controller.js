@@ -43,11 +43,11 @@ export const getOnePost = async (request, response, next) => {
       include: [{ model: User, attributes: ["id", "username"] }],
     });
     if (!post)
-      return response.status(401).json({ message: "Post is unavailable!" });
-    return response.status(201).json({ message: "Post Found!", post });
+      return response.status(404).json({ message: "Post is unavailable!" });
+    return response.status(200).json({ message: "Post Found!", post });
   } catch (err) {
     console.log("Error fetching post ", err);
-    return response.status(501).json({ error: "Internal Server Error" });
+    return response.status(500).json({ error: "Internal Server Error" });
   }
 };
 // http://localhost:4321/post/all-posts  (GET)
@@ -56,10 +56,10 @@ export const getAllPosts = async (request, response, next) => {
     let allPosts = await Post.findAll({
       include: [{ model: User, attributes: ["id", "username"] }],
     });
-    return response.status(201).json({ message: "All Posts", allPosts });
+    return response.status(200).json({ message: "All Posts", allPosts });
   } catch (err) {
     console.log("Error fetching posts ", err);
-    return response.status(501).json({ error: "Internal Server Error" });
+    return response.status(500).json({ error: "Internal Server Error" });
   }
 };
 // http://localhost:4321/post/create-post  (POST)
@@ -67,7 +67,7 @@ export const createPost = async (request, response, next) => {
   try {
     let contentEmptyError = validationResult(request);
     if (!contentEmptyError.isEmpty())
-      return response.status(401).json({
+      return response.status(400).json({
         error: "Invalid Data",
         errorMessages: contentEmptyError.array(),
       });
@@ -79,6 +79,6 @@ export const createPost = async (request, response, next) => {
       .json({ message: "Post Created Successfully!", postCreation });
   } catch (err) {
     console.log("Post Creation failed ", err);
-    return response.status(501).json({ error: "Internal Server Error" });
+    return response.status(500).json({ error: "Internal Server Error" });
   }
 };

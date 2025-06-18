@@ -5,10 +5,10 @@ import { auth } from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.post("/do-comment/:postId", auth,
+router.post("/:postId", auth,
     body("comment","Comment cannot be empty!").notEmpty()
     ,doComment);
-router.get("/all-comments/:postId",auth, getAllComments);
-router.patch("/update-comment/:id",auth, updateComment);
-router.delete("/delete-comment/:id",auth, deleteComment);
+router.get("/:postId",auth, getAllComments);
+router.patch("/:id",auth, updateComment);
+router.delete("/:id",auth, deleteComment);
 export default router;

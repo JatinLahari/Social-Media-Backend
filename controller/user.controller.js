@@ -30,7 +30,11 @@ export const userSignIn = async(request, response, next)=>{
         let {username, password} = request.body;
         let findUser = await User.findOne({where:{username}, raw: true});
         if(findUser){
-            response.cookie("token",generateToken(findUser.id))
+            response.cookie("token",generateToken(findUser.id),{
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "strict"
+            })
             let passwordComparison = bcrypt.compareSync(password.toString(), findUser.password);
             return passwordComparison ? response.status(200).json({message:"Sign In Successful", UserName: findUser.username}) : response.status(401).json({message:" Invalid Credentials!"});
         }
@@ -47,7 +51,7 @@ const generateToken = (userId)=>{
     return token;
 }
 
-// http://locahost:4321/user/sign-up
+// http://localhost:4321/user/sign-up
 export const userSignUp = async(request, response, next)=>{
     try{
         let errors = validationResult(request);

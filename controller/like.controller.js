@@ -5,7 +5,7 @@ export const likePost = async(request, response, next)=>{
     try{
         let userId = request.user.userId;
         let postId = request.params.postId;
-        if(!userId) return response.status(404).json({message:"User not logged in"});
+        if(!userId) return response.status(401).json({message:"User not logged in"});
         let foundPost = await Post.findByPk(postId);
         if(!foundPost) return response.status(404).json({message:"Post not found!"});
 
@@ -17,22 +17,22 @@ export const likePost = async(request, response, next)=>{
     }
     catch(err){
         console.log("Failed to Like Post ",err);
-        return response.status(501).json({error:"Internal Server Error"});
+        return response.status(500).json({error:"Internal Server Error"});
     }
 }
 export const unlikePost = async (req, res, next)=>{
     try{
         let userId = req.user.userId;
         let postId = req.params.postId;
-        if(!userId) return res.status(404).json({message:"User not logged in"});
+        if(!userId) return res.status(401).json({message:"User not logged in"});
 
         const deletelike = await Like.destroy({where: {userId, postId}});
-        if(!deletelike) return res.status(404).json("Post not unliked");
+        if(!deletelike) return res.status(404).json({message: "Post not unliked"});
 
         return res.status(200).json({message:"Post Unliked!"});
     }
     catch(err){
         console.log("Failed to unlike the post ",err);
-        return res.status(501).json({error:"Internal Server Error"});
+        return res.status(500).json({error:"Internal Server Error"});
     }
 }

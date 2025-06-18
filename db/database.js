@@ -7,9 +7,9 @@ const sequelize = new Sequelize(process.env.DB_NAME,process.env.DB_USER,process.
 });
 sequelize.authenticate()
 .then(()=>{
-  console.log("Database Created successfully!");  
+  console.log("Database Connected successfully!");  
 })
 .catch(err=>{
-    console.log("Error in creating Database ", err);
+    console.log("Error in Connecting Database ", err);
 })
 export default sequelize;

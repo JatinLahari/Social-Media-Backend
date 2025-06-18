@@ -5,13 +5,13 @@ import { auth } from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.post("/create-post", auth,
+router.post("/", auth,
     body("content", "Content cannot be empty!").notEmpty(),
     createPost);
-router.get("/all-posts",auth, getAllPosts);
-router.get("/one-post/:id", auth, getOnePost);
-router.patch("/update-post/:id", auth,
+router.get("/",auth, getAllPosts);
+router.get("/:id", auth, getOnePost);
+router.patch("/:id", auth,
     body("content", "Content cannot be empty!").notEmpty(),
     updatePost);
-router.delete("/delete-post/:id", auth, deletePost);
+router.delete("/:id", auth, deletePost);
 export default router;
