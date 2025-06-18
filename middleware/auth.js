@@ -2,11 +2,14 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 export const auth = async(request, response, next)=>{
-    let {token} = request.cookies;
+    let { token } = request.cookies;
     try{
-        if(!token) throw new Error("Unauthorized User");    
+        if(!token)
+            throw new Error("Unauthorized User");    
+
         let decode = jwt.verify(token, process.env.SOCIAL_MEDIA_SECRET_KEY);
         console.log(decode.userId);
+        request.user = decode;
         next();
     }
     catch(err){

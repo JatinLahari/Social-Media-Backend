@@ -32,7 +32,7 @@ export const userSignIn = async(request, response, next)=>{
         if(findUser){
             response.cookie("token",generateToken(findUser.id))
             let passwordComparison = bcrypt.compareSync(password.toString(), findUser.password);
-            return passwordComparison ? response.status(200).json({message:"Sign In Successful", UserId: findUser.username}) : response.status(401).json({message:" Invalid Credentials!"});
+            return passwordComparison ? response.status(200).json({message:"Sign In Successful", UserName: findUser.username}) : response.status(401).json({message:" Invalid Credentials!"});
         }
         return response.status(404).json({message:"User Not Found!"});
     }
